@@ -2,75 +2,164 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct Employee {
+struct Employee
+{
     int EmployeeID;
-    char FirstName[10];
-    char LastName[10];
-    char Gender[6];
-    char DOB[10];
+    char FirstName[255];
+    char LastName[255];
+    char Gender[255];
+    char DOB[255];
     int Department;
-    char Country[10];
+    char Country[255];
 };
 
-struct Project{
+struct Project
+{
     int ProjectID;
-    char ProjectName[50];
+    char ProjectName[255];
     int Week;
 };
 
-struct Progress{
+struct Progress
+{
     int EmployeeID;
     int ProjectID;
     float Progress;
 };
 
-int docFile(struct Employee emp[1000000], char fileName[]) {
+int readFileEmployee(struct Employee emp[1000], char fileName[]) {
     FILE * fp;
     int i = 0;
-    fp = fopen (fileName, "r");
-    // doc thong tin sinh vien
-    int id;
-    char first_name[10];
-    char last_name[10];
-    char gen[6];
-    char dob[10];
-    int dep;
-    char cnt[10];
-    fscanf(fp, "%d,%s,%s,%s,%s,%d,%s", &id, first_name, last_name, gen, dob, &dep, cnt);
-    while (fscanf(fp, "%d,%s,%s,%s,%s,%d,%s", &id, first_name, last_name, gen, dob, &dep, cnt) != EOF)
-    {
-        // emp[i].EmployeeID = id;
-        // emp[i].FirstName[10] = first_name;
-        // emp[i].LastName[10] = last_name;
-        // emp[i].Gender[6] = gen;
-        // emp[i].DOB[10] = dob;
-        // emp[i].Department = dep;
-        // emp[i].Country[10] = cnt;
-        // i++;
-        printf("%d \n", id);
+    fp = fopen (fileName, "r"); 
+    if (fp != NULL) {
+        // doc thong tin sinh vien
+        char tmp[255];
+        fgets(tmp, 255, fp);
+        while (fscanf(fp, "%d,%[^,],%[^,],%[^,],%[^,],%d,%s", &emp[i].EmployeeID, &emp[i].FirstName, &emp[i].LastName, &emp[i].Gender, &emp[i].DOB, &emp[i].Department, &emp[i].Country) != EOF)
+        {
+            i++;  
+        }
     }
-    // char str[1000];
-    // fgets(str, 1000, fp);
-    // while(fgets(str, 1000, fp) != NULL) {
-    //     emp[i].EmployeeID = atoi(strtok(str, ","));
-    //     emp[i].FirstName[10] = strtok(NULL, ",");
-    //     emp[i].LastName[10] = strtok(NULL, ",");
-    //     emp[i].Gender[6] = strtok(NULL, ",");
-    //     emp[i].DOB[10] = strtok(NULL, ",");
-    //     emp[i].Department = atoi(strtok(NULL, ","));
-    //     emp[i].Country[10] = strtok(NULL, ",");
-    //     i++;
-    //     printf("%d", emp[i].EmployeeID);
-        
-    // }
     // tra ve so luong sinh vien duoc doc tu file
     return i;
     fclose (fp);
 }
 
-void main()
+int readFileProject(struct Project pj[1000], char fileName[]) {
+    FILE * fp;
+    int i = 0;
+    fp = fopen (fileName, "r"); 
+    if (fp != NULL) {
+        // doc thong tin du an
+        char tmp[255];
+        fgets(tmp, 255, fp);
+        while (fscanf(fp, "%d,%[^,],%d", &pj[i].ProjectID, &pj[i].ProjectName, &pj[i].Week) != EOF)
+        {
+            i++;  
+        }
+    }
+    // tra ve so luong du an duoc doc tu file
+    return i;
+    fclose (fp);
+}
+
+int readFileProgress(struct Progress pg[1000], char fileName[]) {
+    FILE * fp;
+    int i = 0;
+    fp = fopen (fileName, "r"); 
+    if (fp != NULL) {
+        // doc thong tin sinh vien
+        char tmp[255];
+        fgets(tmp, 255, fp);
+        while (fscanf(fp, "%d,%d,%f", &pg[i].EmployeeID, &pg[i].ProjectID, &pg[i].Progress) != EOF)
+        {
+            i++;  
+        }
+    }
+    // tra ve so luong sinh vien duoc doc tu file
+    return i;
+    fclose (fp);
+}
+
+void writeEmployee(struct Employee emp[], int n, char fileName[]) {
+    FILE * fp;
+    fp = fopen (fileName, "w");  
+    if (fp != NULL) {
+        for(int i = 0;i < n;i++){
+            fprintf(fp, "%d,%s,%s,%s,%s,%d,%s", emp[i].EmployeeID, emp[i].FirstName, emp[i].LastName, emp[i].Gender, emp[i].DOB, emp[i].Department, emp[i].Country);
+        }
+    }
+    fclose (fp);
+}
+
+int countDepartment(struct Employee emp[], int n, int dep) {
+    int cnt = 0;
+    for (int i = 0; i < n; i++) {
+        if (emp[i].Department == dep) {
+            cnt++;
+        }
+    }
+    return cnt;
+}
+
+void listEmp(struct Employee emp[], int n, char gen[7]) {
+    for (int i = 0; i < n; i++) {
+        if (strcmp(emp[i].Gender, gen) == 0) {
+            printf("%d,%s,%s,%s,%s,%d,%s\n", emp[i].EmployeeID, emp[i].FirstName, emp[i].LastName, emp[i].Gender, emp[i].DOB, emp[i].Department, emp[i].Country);
+        }
+    }
+}
+
+void reportN(struct Progress pg[], int numPg, float n) {
+    for (int i = 0; i < numPg; i++) {
+        if (pg[i].Progress == n) {
+            printf("%d\n", pg[i].EmployeeID);
+        }
+    }
+}
+
+void averageX(struct Progress pg[], int numPg, int x) {
+    float sum = 0;
+    int cnt = 0;
+    float result = 0;
+    for (int i = 0; i < numPg; i++) {
+        if (pg[i].ProjectID == x) {
+            sum += pg[i].Progress;
+            cnt++;
+        }
+    }    
+    result = sum/cnt;
+    printf("%.3f\n", result);
+}
+
+int main()
 {
-    struct Employee emp[100000];
-    docFile(emp, "Employee.csv");
-    // printf("%d", atoi("42"));
+    struct Employee emp[1000];
+    struct Project pj[1000];
+    struct Progress pg[1000];
+    int numEmp = readFileEmployee(emp, "Employee.csv");
+    // int numPj = readFileProject(pj, "Project.csv");
+    // int numPg = readFileProgress(pg, "Progress.csv");
+    // printf("%s\n", emp[0].EmployeeID);
+
+    // int result = countDepartment(emp, numEmp, 12549);
+    // printf("%d\n", result);
+
+    listEmp(emp, numEmp, "Male");
+
+    // int key;
+    // int result;
+    // scanf("%d",&key);
+
+    // switch(key) {
+    //     case 1:
+    //         printf("aaaa");
+    //         result = countDepartment(emp, numEmp, 12549);
+    //         printf("%d", result);
+    //         exit;
+    //     case 2:
+    //         exit;
+    // }
+    
+    return 0;
 }
