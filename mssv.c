@@ -36,7 +36,7 @@ int readFileEmployee(struct Employee emp[]) {
         // doc thong tin sinh vien
         char tmp[255];
         fgets(tmp, 255, fp);
-        while (fscanf(fp, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%s", &emp[i].EmployeeID, &emp[i].FirstName, &emp[i].LastName, &emp[i].Gender, &emp[i].DOB, &emp[i].Department, &emp[i].Country) != EOF)
+        while (fscanf(fp, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%s\n", &emp[i].EmployeeID, &emp[i].FirstName, &emp[i].LastName, &emp[i].Gender, &emp[i].DOB, &emp[i].Department, &emp[i].Country) != EOF)
         {
             i++;  
         }
@@ -54,7 +54,7 @@ int readFileProject(struct Project pj[]) {
         // doc thong tin du an
         char tmp[255];
         fgets(tmp, 255, fp);
-        while (fscanf(fp, "%[^,],%[^,],%d", &pj[i].ProjectID, &pj[i].ProjectName, &pj[i].Week) != EOF)
+        while (fscanf(fp, "%[^,],%[^,],%d\n", &pj[i].ProjectID, &pj[i].ProjectName, &pj[i].Week) != EOF)
         {
             i++;  
         }
@@ -72,7 +72,7 @@ int readFileProgress(struct Progress pg[]) {
         // doc thong tin sinh vien
         char tmp[255];
         fgets(tmp, 255, fp);
-        while (fscanf(fp, "%[^,],%[^,],%f", &pg[i].EmployeeID, &pg[i].ProjectID, &pg[i].Progress) != EOF)
+        while (fscanf(fp, "%[^,],%[^,],%f\n", &pg[i].EmployeeID, &pg[i].ProjectID, &pg[i].Progress) != EOF)
         {
             i++;  
         }
@@ -108,15 +108,8 @@ int listEmp(struct Employee emp[], int numEmp, char gen[7])
     fp = fopen ("result.csv", "w");  
 
     for (int i = 0; i < numEmp; i++) {
-        if (strcmp(gen, "Female") == 0) {
-            if (strcmp(emp[i].Gender, gen) == 0) {
-                fprintf(fp, "%s,%s,%s,%s,%s,%s,%s", emp[i].EmployeeID, emp[i].FirstName, emp[i].LastName, emp[i].Gender, emp[i].DOB, emp[i].Department, emp[i].Country);
-            }
-        }
-        else if (strcmp(gen, "Male") == 0) {
-            if (strcmp(emp[i].Gender, gen) == 0) {
-                fprintf(fp, "%s,%s,%s,%s,%s,%s,%s", emp[i].EmployeeID, emp[i].FirstName, emp[i].LastName, emp[i].Gender, emp[i].DOB, emp[i].Department, emp[i].Country);
-            }
+        if (strcmp(emp[i].Gender, gen) == 0) {
+            fprintf(fp, "%s,%s,%s,%s,%s,%s,%s\n", emp[i].EmployeeID, emp[i].FirstName, emp[i].LastName, emp[i].Gender, emp[i].DOB, emp[i].Department, emp[i].Country);
         }
     }
 
@@ -124,23 +117,10 @@ int listEmp(struct Employee emp[], int numEmp, char gen[7])
     return 1;
 }
 
-char * replaceChars(char str[]) 
-{
-    int i = 0;
-    while(str[i] != '\0') {
-        if(str[i] == '.' || str[i] == '-') {
-            str[i] = '\0';
-        }
-        i++;
-    }
-    return str;
-}
-
 int isDigitChar(char str[])
 {
-    replaceChars(str);
     for (int i = 0; i < strlen(str); i++) {
-        if (!isdigit(str[i])) {
+        if (str[i]!= '.' && str[i]!= '-' && !isdigit(str[i])) {
             return 0;
         }
     }
@@ -154,7 +134,7 @@ int reportN(struct Progress pg[], int numPg, char n[])
         return 0;
     }
     else {
-        tmp = atoi(n);
+        tmp = atof(n);
         if (tmp < 0 || tmp > 1) {
             return 0;
         }
@@ -188,7 +168,7 @@ int averageX(struct Progress pg[], int numPg, char x[])
         }
     }    
     result = sum/cnt;
-    fprintf(fp, "%.3f\n", result);
+    fprintf(fp, "%.3f", result);
     fclose (fp);
     return 1;
 }
@@ -236,7 +216,7 @@ int countryName(struct Employee emp[], int numEmp, char name[])
 {
     FILE * fp;
     fp = fopen ("result.csv", "w");  
-
+    
     for (int i = 0; i < numEmp; i++) {
         if (strcmp(emp[i].Country, name) == 0) {
             fprintf(fp, "%s,%s,%s,%s,%s,%s,%s\n", emp[i].EmployeeID, emp[i].FirstName, emp[i].LastName, emp[i].Gender, emp[i].DOB, emp[i].Department, emp[i].Country);
@@ -275,12 +255,10 @@ int execute(struct Employee emp[], int numEmp, struct Project pj[], int numPj, s
     char s[2] = " ";
     // get 1st word
     char *token1 = strtok(str, s);
-    // fprintf("token1 %s\n", token1);
     // convert to lowercase 
     convertToLowercase(token1);
     // get 2nd word
     char *token2 = strtok(NULL, s);
-    // fprintf("token2 %s\n", token2);
     if (token2 != NULL) {
         // compare with all command to execute
         if (strcmp(token1, "count") == 0) {
