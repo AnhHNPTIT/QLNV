@@ -36,7 +36,7 @@ int readFileEmployee(struct Employee emp[]) {
         // doc thong tin sinh vien
         char tmp[255];
         fgets(tmp, 255, fp);
-        while (fscanf(fp, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%s\n", &emp[i].EmployeeID, &emp[i].FirstName, &emp[i].LastName, &emp[i].Gender, &emp[i].DOB, &emp[i].Department, &emp[i].Country) != EOF)
+        while (fscanf(fp, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%s\n", emp[i].EmployeeID, emp[i].FirstName, emp[i].LastName, emp[i].Gender, emp[i].DOB, emp[i].Department, emp[i].Country) != EOF)
         {
             i++;  
         }
@@ -54,7 +54,7 @@ int readFileProject(struct Project pj[]) {
         // doc thong tin du an
         char tmp[255];
         fgets(tmp, 255, fp);
-        while (fscanf(fp, "%[^,],%[^,],%d\n", &pj[i].ProjectID, &pj[i].ProjectName, &pj[i].Week) != EOF)
+        while (fscanf(fp, "%[^,],%[^,],%d\n", pj[i].ProjectID, pj[i].ProjectName, &pj[i].Week) != EOF)
         {
             i++;  
         }
@@ -72,7 +72,7 @@ int readFileProgress(struct Progress pg[]) {
         // doc thong tin sinh vien
         char tmp[255];
         fgets(tmp, 255, fp);
-        while (fscanf(fp, "%[^,],%[^,],%f\n", &pg[i].EmployeeID, &pg[i].ProjectID, &pg[i].Progress) != EOF)
+        while (fscanf(fp, "%[^,],%[^,],%f\n", pg[i].EmployeeID, pg[i].ProjectID, &pg[i].Progress) != EOF)
         {
             i++;  
         }
