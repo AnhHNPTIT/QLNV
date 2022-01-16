@@ -38,6 +38,7 @@ int readFileEmployee(struct Employee emp[]) {
         fgets(tmp, 255, fp);
         while (fscanf(fp, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%s\n", emp[i].EmployeeID, emp[i].FirstName, emp[i].LastName, emp[i].Gender, emp[i].DOB, emp[i].Department, emp[i].Country) != EOF)
         {
+            printf("%s\n", emp[i].EmployeeID);
             i++;  
         }
     }
